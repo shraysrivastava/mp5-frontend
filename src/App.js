@@ -54,7 +54,19 @@ function App({}) {
 
   // TODO: Use `useMutation` from TanStack Query to call your `addEvent` function.
   // HINT: On success, invalidate the query (so 'events' can be refeteched and updated) and close the form pop-up.
-  const mutation = useMutation({});
+  const mutation = useMutation({
+    mutationFn: addEvent,
+    onSuccess: () => {
+      // Invalidate the 'events' query to trigger an automatic re-fetch
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      // Close the modal pop-up so the user sees the updated grid
+      setShowForm(false);
+    },
+    onError: (err) => {
+      // Clean practice: Log the error so you can see it in the Inspect Console
+      console.error("Mutation failed:", err.message);
+    }
+  });
 
   // TODO: Call your mutation function to trigger the event addition.
   // HINT: Use `mutation.mutate()`.
